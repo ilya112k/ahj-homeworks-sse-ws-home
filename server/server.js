@@ -26,22 +26,27 @@ wss.on("connection", (ws) => {
         );
 
         if (isTaken) {
-          return messages.send(ws, {
+          return messages.send(WebSocket, ws, {
             type: "error",
             message: "Имя уже занято",
           });
         }
-        
+
         users.set(ws, nickname);
 
-        messages.send(ws, { type: "registered" });
-        messages.users(wss, users);
-        messages.system(wss, `${nickname} присоедился к чату`, "USER_JOINED");
+        messages.send(WebSocket, ws, { type: "registered" });
+        messages.users(WebSocket, wss, users);
+        messages.system(
+          WebSocket,
+          wss,
+          `${nickname} присоедился к чату`,
+          "USER_JOINED",
+        );
       }
 
       if (msg.type === "message" && nickname) {
         wss.clients.forEach((client) => {
-          messages.send(client, {
+          messages.send(WebSocket, client, {
             type: "message",
             nickname,
             text: msg.text,
@@ -58,8 +63,8 @@ wss.on("connection", (ws) => {
   ws.on("close", () => {
     if (nickname) {
       users.delete(ws);
-      messages.users(wss, users);
-      messages.system(wss, `${nickname} покинул чат`, "USER_LEFT");
+      messages.users(WebSocket, wss, users);
+      messages.system(WebSocket, wss, `${nickname} покинул чат`, "USER_LEFT");
     }
   });
 });
