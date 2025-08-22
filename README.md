@@ -4,4 +4,4 @@
 
 Server on: https://ahj-homeworks-sse-ws-home.onrender.com/
 
-GP Pages: 
+GP Pages:  https://ilya112k.github.io/ahj-homeworks-sse-ws-home/
