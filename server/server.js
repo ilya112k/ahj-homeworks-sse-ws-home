@@ -20,6 +20,18 @@ wss.on("connection", (ws) => {
 
       if (msg.type === "register") {
         nickname = msg.nickname.trim();
+
+        const isTaken = [...users.values()].some(
+          (n) => n.toLowerCase() === name.toLowerCase(),
+        );
+
+        if (isTaken) {
+          return messages.send(ws, {
+            type: "error",
+            message: "Имя уже занято",
+          });
+        }
+        
         users.set(ws, nickname);
 
         messages.send(ws, { type: "registered" });

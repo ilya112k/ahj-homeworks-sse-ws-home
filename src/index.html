@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Чат</title>
+</head>
+<body>
+<div id="auth" class="modal auth-modal">
+  <div class="auth-card">
+    <h2>Выберите имя</h2>
+    <form class="input-group">
+      <input type="text" id="nicknameInput" placeholder="Введите имя">
+      <button id="authButton" type="submit" class="btn-primary">Войти</button>
+    </form>
+    <div id="authError" class="error-message"></div>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal confirm-modal">
+  <div class="confirm-content">
+    <p>Вы уверены, выйти?</p>
+    <div class="confirm-buttons">
+      <button id="confirmLeave" class="btn-primary danger">Да</button>
+      <button id="confirmCancel" class="btn-primary">Нет</button>
+    </div>
+  </div>
+</div>
+
+<main class="chat-container">
+  <section class="chat-sidebar">
+    <div class="sidebar-header">
+      <h3>Сейчас онлайн</h3>
+      <button id="logoutButton" class="btn-icon" title="Выйти">
+        Выйти
+      </button>
+    </div>
+    <ul id="userList" class="user-list"></ul>
+  </section>
+
+  <section class="chat-main">
+    <div class="chat-messages" id="chatArea"></div>
+    <div class="chat-input">
+      <textarea id="messageInput" placeholder="Напишите ваше сообщение..." rows="1" enterkeyhint="send" maxlength="100"></textarea>
+      <button id="sendButton" class="btn-primary">Отправить</button>
+    </div>
+  </section>
+</main>
+
+
+
+</body>
+</html>
