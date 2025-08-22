@@ -13,15 +13,14 @@ module.exports = merge(common, {
     historyApiFallback: true,
     open: true,
     compress: true,
-    port: 8080,
+    port: 8081,
   },
 
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.WS_URL': JSON.stringify("ws://localhost:8000")
+      "process.env.WS_URL": JSON.stringify("ws://localhost:8000"),
     }),
     // Only update what has changed on hot reload
     new webpack.HotModuleReplacementPlugin(),
   ],
-
 });
