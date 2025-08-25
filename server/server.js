@@ -6,11 +6,18 @@ const {send} = require("./messages");
 const PORT = 8000;
 const users = new Map();
 
+
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.end("Chat server is running");
 });
 const wss = new WebSocket.Server({ server });
+
+function safeSend(client, data) {
+  if (client.readyState === WebSocket.OPEN) {
+    client.send(JSON.stringify(data));
+  }
+}
 
 wss.on("connection", (ws) => {
   let nickname = null;
@@ -23,7 +30,7 @@ wss.on("connection", (ws) => {
         nickname = msg.nickname.trim();
 
         const isTaken = [...users.values()].some(
-          (n) => n.toLowerCase() === name.toLowerCase(),
+          (n) => n.toLowerCase() === nickname.toLowerCase(),
         );
 
         if (isTaken) {
@@ -32,24 +39,16 @@ wss.on("connection", (ws) => {
             message: "Имя уже занято",
           });
         }
-
         users.set(ws, nickname);
 
         messages.send(WebSocket, ws, { type: "registered" });
-       // messages.users(WebSocket, wss, users);
         const userList = [...users.values()];
         wss.clients.forEach((client) => {
-          send(client, { type: "userList", users: userList });
+          safeSend(client, { type: "userList", users: userList });
         });
         wss.clients.forEach((client) => {
-          send(client, { type: "system", text: `${nickname} присоедился к чату`, eventType: "USER_JOINED"});
+          safeSend(client, { type: "system", text: `${nickname} присоедился к чату`, eventType: "USER_JOINED"});
         });
-       /* messages.system(
-          WebSocket,
-          wss,
-          `${nickname} присоедился к чату`,
-          "USER_JOINED",
-        );*/
       }
 
       if (msg.type === "message" && nickname) {
@@ -71,8 +70,12 @@ wss.on("connection", (ws) => {
   ws.on("close", () => {
     if (nickname) {
       users.delete(ws);
-     // messages.users(WebSocket, wss, users);
-     // messages.system(WebSocket, wss, `${nickname} покинул чат`, "USER_LEFT");
+      wss.clients.forEach((client) => {
+        safeSend(client, { type: "userList", users: users });
+      });
+      wss.clients.forEach((client) => {
+        safeSend(client, { type: "system", text: `${nickname} покинул чат`, eventType: "USER_LEFT"});
+      });
     }
   });
 });

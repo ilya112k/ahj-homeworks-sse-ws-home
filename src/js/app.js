@@ -4,7 +4,7 @@ import { UiManager } from "./ui-manager";
 import { CancelModal } from "./cancel-modal";
 import { ChatManager } from "./chat-manager";
 
-const beURL = "https://ahj-homeworks-sse-ws-home.onrender.com/";
+const beURL = "http://localhost:8000/";
 document.addEventListener("DOMContentLoaded", () => {
   const auth = new Auth();
   const uiManager = new UiManager();

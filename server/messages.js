@@ -9,7 +9,5 @@ function system(WebSocket, wss, text, eventType) {
   });
 }
 
-function users(WebSocket, wss, usersList) {
-
-}
+function users(WebSocket, wss, usersList) {}
 export { send, system, users };
