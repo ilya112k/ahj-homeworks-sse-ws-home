@@ -1,6 +1,7 @@
 const WebSocket = require("ws");
 const http = require("http");
 const messages = require("./messages");
+const {send} = require("./messages");
 
 const PORT = 8000;
 const users = new Map();
@@ -35,13 +36,20 @@ wss.on("connection", (ws) => {
         users.set(ws, nickname);
 
         messages.send(WebSocket, ws, { type: "registered" });
-        messages.users(WebSocket, wss, users);
-        messages.system(
+       // messages.users(WebSocket, wss, users);
+        const userList = [...users.values()];
+        wss.clients.forEach((client) => {
+          send(client, { type: "userList", users: userList });
+        });
+        wss.clients.forEach((client) => {
+          send(client, { type: "system", text: `${nickname} присоедился к чату`, eventType: "USER_JOINED"});
+        });
+       /* messages.system(
           WebSocket,
           wss,
           `${nickname} присоедился к чату`,
           "USER_JOINED",
-        );
+        );*/
       }
 
       if (msg.type === "message" && nickname) {
@@ -63,8 +71,8 @@ wss.on("connection", (ws) => {
   ws.on("close", () => {
     if (nickname) {
       users.delete(ws);
-      messages.users(WebSocket, wss, users);
-      messages.system(WebSocket, wss, `${nickname} покинул чат`, "USER_LEFT");
+     // messages.users(WebSocket, wss, users);
+     // messages.system(WebSocket, wss, `${nickname} покинул чат`, "USER_LEFT");
     }
   });
 });

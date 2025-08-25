@@ -10,9 +10,6 @@ function system(WebSocket, wss, text, eventType) {
 }
 
 function users(WebSocket, wss, usersList) {
-  const userList = [...usersList.values()];
-  wss.clients.forEach((client) => {
-    send(client, { type: "userList", users: userList });
-  });
+
 }
 export { send, system, users };
